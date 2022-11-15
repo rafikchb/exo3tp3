@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+// class definissant les tache est une mehode pour faire le trie sequentielle.
 class QuickSortTask implements Callable<Boolean> {
     // list des tache en prevu pour etre executer (Futures).
     public static List<Future<Boolean>> listTask = Collections.synchronizedList(new LinkedList<Future<Boolean>>());
@@ -23,39 +24,38 @@ class QuickSortTask implements Callable<Boolean> {
         this.fin = fin;
     }
 
-    // method call du tache
+    // method call de la tache
     @Override
     public Boolean call() {
-        trierRapidement(threadPool, tableau, debut, fin);
+        trierParalellement(threadPool, tableau, debut, fin);
         return true;
     }
     // method trier utiliser par les tache .
-    private void trierRapidement(ExecutorService threadPool, int[] t, int debut, int fin) {
-
+    private void trierParalellement(ExecutorService threadPool, int[] t, int debut, int fin) {
         if (debut < fin) {
             int p = partitionner(t, debut, fin);
             int taillTabgauche = (p) - debut;
             if (t.length / 100.0 < taillTabgauche) {
                 listTask.add(threadPool.submit(new QuickSortTask(threadPool, t, debut, p - 1)));
             } else {
-                trierRapidement(threadPool, t, debut, p - 1);
+                trierParalellement(threadPool, t, debut, p - 1);
             }
             int taillTabDroit = fin - (p);
             if (t.length / 100.0 < taillTabDroit) {
 
                 threadPool.submit(new QuickSortTask(threadPool, t, p + 1, fin));
             } else {
-                trierRapidement(threadPool, t, p + 1, fin);
+                trierParalellement(threadPool, t, p + 1, fin);
             }
         }
     }
 
     // method tirer sequentielle utiliser pour faire le trie sequentielle.
-    public static void trierRapidementSequetielle(int[] t, int début, int fin) {
+    public static void trierSequetiellement(int[] t, int début, int fin) {
         if (début < fin) {                             // S'il y a un seul élément, il n'y a rien à faire!
             int p = partitionner(t, début, fin) ;      
-            trierRapidementSequetielle(t, début, p-1) ;
-            trierRapidementSequetielle(t, p+1, fin) ;
+            trierSequetiellement(t, début, p-1) ;
+            trierSequetiellement(t, p+1, fin) ;
         }
     }
 

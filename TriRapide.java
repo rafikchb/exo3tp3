@@ -3,9 +3,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+// class principale dexecuion .
 public class TriRapide {
     public static void main(String[] args) throws Exception {
-        int taille = 6;
+        int taille = 10000000;
         int[] multiTachTab = new int[taille]; // multiTachTab utiliser pour le tri sequentielle.
         int[] sequentielTab = new int[taille]; // multiTachTab utiliser pour le trie multiTache.
         int borne = 10 * taille;
@@ -21,7 +22,7 @@ public class TriRapide {
 
         // debut de la partie sequentielle
         Long debutDuTri = System.nanoTime();
-        QuickSortTask.trierRapidementSequetielle(sequentielTab, 0, taille - 1);
+        QuickSortTask.trierSequetiellement(sequentielTab, 0, taille - 1);
         Long finDuTri = System.nanoTime();
         Long dureeDuTriSequentiel = (finDuTri - debutDuTri) / 1_000_000;
         System.out.println("Version séquentielle : " + dureeDuTriSequentiel + " ms .");
@@ -50,6 +51,7 @@ public class TriRapide {
         System.out.println("Gain observé : " + (dureeDuTriSequentiel*1.0/dureeDuTriParallele) );
        
         // TODO : verifier si les deux tableau sont choerant .
+       
      
 
     }
