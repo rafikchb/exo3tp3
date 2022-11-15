@@ -2,6 +2,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -24,8 +25,8 @@ public class Main {
         System.out.println("Démarrage du tri rapide.");
 
         // cration de la premiere tache
-        Future<Boolean> promise = threadPool.submit(new QuickSortTask(threadPool, tableau, 0, taille - 1));
-        promise.get();// attant bloquante que la promaise ce termine .
+        threadPool.execute(new QuickSortTask(threadPool, tableau, 0, taille - 1));
+        while (!threadPool.invokeAll()) ;
         threadPool.shutdown();// on arrete le threadpool
         System.out.print("Tableau final : ");
         afficher(tableau, 0, taille - 1);
