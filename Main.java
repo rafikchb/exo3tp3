@@ -1,12 +1,15 @@
 import java.util.Random;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        int taille = 1000000;
+        int taille = 20;
         int[] tableau = new int[taille];
         int borne = 10 * taille;
 
@@ -20,13 +23,15 @@ public class Main {
         afficher(tableau, 0, taille - 1);
 
         // creation du theadpool
-        ExecutorService threadPool = Executors.newFixedThreadPool(100); // creation du threadpool
-
-        System.out.println("Démarrage du tri rapide.");
+        ExecutorService threadPool = Executors.newFixedThreadPool(4); // creation du threadpool
+        CompletionService<Boolean> completionService = new ExecutorCompletionService<Boolean>(threadPool);
+        System.out.println("Démarrage du tri de.");
 
         // cration de la premiere tache
         threadPool.execute(new QuickSortTask(threadPool, tableau, 0, taille - 1));
-        while (!threadPool.invokeAll()) ;
+
+        // wait for all tasks to be done
+        while (QuickSortTask.cpt.get() > 0) ;
         threadPool.shutdown();// on arrete le threadpool
         System.out.print("Tableau final : ");
         afficher(tableau, 0, taille - 1);
