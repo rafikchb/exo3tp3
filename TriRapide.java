@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -6,16 +7,20 @@ import java.util.concurrent.Future;
 // class principale dexecuion .
 public class TriRapide {
     public static void main(String[] args) throws Exception {
-        int taille = 10000000;
+        int taille = 10;
         int[] multiTachTab = new int[taille]; // multiTachTab utiliser pour le tri sequentielle.
         int[] sequentielTab = new int[taille]; // multiTachTab utiliser pour le trie multiTache.
         int borne = 10 * taille;
+        // copy miltiTachTab dans sequentielTab
+        for (int i = 0; i < taille; i++) {
+            multiTachTab[i] = sequentielTab[i];
+        }
         // initialisation du multiTachTab.
         Random aléa = new Random();
         for (int i = 0; i < taille; i++) {
-            sequentielTab [i] = multiTachTab[i] = aléa.nextInt(2 * borne) - borne;
+            sequentielTab[i] = multiTachTab[i] = aléa.nextInt(2 * borne) - borne;
         }
-       
+
         // affichage du tableau initial .
         System.out.print("tableau initial : ");
         afficher(multiTachTab, 0, taille - 1);
@@ -37,10 +42,13 @@ public class TriRapide {
         // lancement du tri.
         QuickSortTask.listTask.add(threadPool.submit(new QuickSortTask(threadPool, multiTachTab, 0, taille - 1)));
         // attendre que toute les tache termine .
+
         while (!QuickSortTask.listTask.isEmpty()) {
             Future<Boolean> future = QuickSortTask.listTask.remove(0);
             future.get();
         }
+
+        
         // arret du thread pool
         threadPool.shutdown();
         finDuTri = System.nanoTime();
@@ -48,11 +56,15 @@ public class TriRapide {
         System.out.println("Version paralléle " + dureeDuTriParallele + " ms.");
         System.out.print("Tableau trié : ");
         afficher(multiTachTab, 0, taille - 1);
-        System.out.println("Gain observé : " + (dureeDuTriSequentiel*1.0/dureeDuTriParallele) );
-       
+        System.out.println("Gain observé : " + (dureeDuTriSequentiel * 1.0 / dureeDuTriParallele));
+
+        if (Arrays.equals(sequentielTab, multiTachTab)) {
+            System.out.println("Les deux tableaux sont identiques");
+        } else {
+            System.out.println("Les deux tableaux sont differents");
+        }
+
         // TODO : verifier si les deux tableau sont choerant .
-       
-     
 
     }
 

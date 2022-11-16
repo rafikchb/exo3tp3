@@ -1,0 +1,13 @@
+
+characteristique de la machine sur le quelle le programe a etati utiliser : 
+CPU : 2 coeur,  2.90 GHz, 
+Ram : 8GO.
+
+user@USER MINGW64 /c/rafik/etudes/master-aix-marseille/POC/exo3tp3 (main)
+$ java TriRapide
+tableau initial :  -8957255 1972526 -6813277 5632142... 5853069 -2891525 -8262466 4136364
+Version séquentielle : 215 ms .
+Tableau trié :  -9999995 -9999963 -9999961 -9999950... 9999925 9999949 9999950 9999991
+Version paralléle 120 ms.
+Tableau trié :  -9999995 -9999963 -9999961 -9999950... 9999925 9999949 9999950 9999991
+Gain observé : 1.7916666666666667
